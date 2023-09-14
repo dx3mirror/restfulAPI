@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HHRUModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DrillBlock">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+    <Property Name="DrillBlockPoint" Type="Int32" />
+    <NavigationProperty Name="DrillBlockPoint1" Relationship="Self.FK_DrillBlock_DrillBlockPoint" FromRole="DrillBlock" ToRole="DrillBlockPoint" />
+    <NavigationProperty Name="Hole" Relationship="Self.FK_Hole_DrillBlock" FromRole="DrillBlock" ToRole="Hole" />
+  </EntityType>
+  <EntityType Name="DrillBlockPoint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DrillBlockId" Type="Int32" />
+    <Property Name="Sequence" Type="Int32" />
+    <Property Name="X" Type="Int32" />
+    <Property Name="Y" Type="Int32" />
+    <Property Name="Z" Type="Int32" />
+    <NavigationProperty Name="DrillBlock" Relationship="Self.FK_DrillBlock_DrillBlockPoint" FromRole="DrillBlockPoint" ToRole="DrillBlock" />
+  </EntityType>
+  <EntityType Name="Hole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="DrillBlockId" Type="Int32" />
+    <Property Name="Depth" Type="Int32" />
+    <Property Name="DrillBlock" Type="Int32" />
+    <Property Name="HolePoints" Type="Int32" />
+    <NavigationProperty Name="DrillBlock1" Relationship="Self.FK_Hole_DrillBlock" FromRole="Hole" ToRole="DrillBlock" />
+    <NavigationProperty Name="HolePoint" Relationship="Self.FK_Hole_HolePoint" FromRole="Hole" ToRole="HolePoint" />
+  </EntityType>
+  <EntityType Name="HolePoint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="HoleId" Type="Int32" />
+    <Property Name="X" Type="Int32" />
+    <Property Name="Y" Type="Int32" />
+    <Property Name="Z" Type="Int32" />
+    <NavigationProperty Name="Hole" Relationship="Self.FK_Hole_HolePoint" FromRole="HolePoint" ToRole="Hole" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <Association Name="FK_DrillBlock_DrillBlockPoint">
+    <End Role="DrillBlockPoint" Type="Self.DrillBlockPoint" Multiplicity="0..1" />
+    <End Role="DrillBlock" Type="Self.DrillBlock" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DrillBlockPoint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DrillBlock">
+        <PropertyRef Name="DrillBlockPoint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Hole_DrillBlock">
+    <End Role="DrillBlock" Type="Self.DrillBlock" Multiplicity="0..1" />
+    <End Role="Hole" Type="Self.Hole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DrillBlock">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Hole">
+        <PropertyRef Name="DrillBlock" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Hole_HolePoint">
+    <End Role="HolePoint" Type="Self.HolePoint" Multiplicity="0..1" />
+    <End Role="Hole" Type="Self.Hole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HolePoint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Hole">
+        <PropertyRef Name="HolePoints" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HHRUEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DrillBlock" EntityType="Self.DrillBlock" />
+    <EntitySet Name="DrillBlockPoint" EntityType="Self.DrillBlockPoint" />
+    <EntitySet Name="Hole" EntityType="Self.Hole" />
+    <EntitySet Name="HolePoint" EntityType="Self.HolePoint" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <AssociationSet Name="FK_DrillBlock_DrillBlockPoint" Association="Self.FK_DrillBlock_DrillBlockPoint">
+      <End Role="DrillBlockPoint" EntitySet="DrillBlockPoint" />
+      <End Role="DrillBlock" EntitySet="DrillBlock" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Hole_DrillBlock" Association="Self.FK_Hole_DrillBlock">
+      <End Role="DrillBlock" EntitySet="DrillBlock" />
+      <End Role="Hole" EntitySet="Hole" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Hole_HolePoint" Association="Self.FK_Hole_HolePoint">
+      <End Role="HolePoint" EntitySet="HolePoint" />
+      <End Role="Hole" EntitySet="Hole" />
+    </AssociationSet>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(HHRUModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(HHRUModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>

@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище HHRUModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="DrillBlock">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" />
+    <Property Name="UpdateTime" Type="datetime" />
+    <Property Name="DrillBlockPoint" Type="int" />
+  </EntityType>
+  <EntityType Name="DrillBlockPoint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DrillBlockId" Type="int" />
+    <Property Name="Sequence" Type="int" />
+    <Property Name="X" Type="int" />
+    <Property Name="Y" Type="int" />
+    <Property Name="Z" Type="int" />
+  </EntityType>
+  <EntityType Name="Hole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" MaxLength="200" />
+    <Property Name="DrillBlockId" Type="int" />
+    <Property Name="Depth" Type="int" />
+    <Property Name="DrillBlock" Type="int" />
+    <Property Name="HolePoints" Type="int" />
+  </EntityType>
+  <EntityType Name="HolePoint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HoleId" Type="int" />
+    <Property Name="X" Type="int" />
+    <Property Name="Y" Type="int" />
+    <Property Name="Z" Type="int" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <Association Name="FK_DrillBlock_DrillBlockPoint">
+    <End Role="DrillBlockPoint" Type="Self.DrillBlockPoint" Multiplicity="0..1" />
+    <End Role="DrillBlock" Type="Self.DrillBlock" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DrillBlockPoint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="DrillBlock">
+        <PropertyRef Name="DrillBlockPoint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Hole_DrillBlock">
+    <End Role="DrillBlock" Type="Self.DrillBlock" Multiplicity="0..1" />
+    <End Role="Hole" Type="Self.Hole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DrillBlock">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Hole">
+        <PropertyRef Name="DrillBlock" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Hole_HolePoint">
+    <End Role="HolePoint" Type="Self.HolePoint" Multiplicity="0..1" />
+    <End Role="Hole" Type="Self.Hole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HolePoint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Hole">
+        <PropertyRef Name="HolePoints" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="version" Type="int" Mode="In" />
+    <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+  </Function>
+  <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+  </Function>
+  <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+    <Parameter Name="owner_id" Type="int" Mode="In" />
+    <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="Хранилище HHRUModelContainer">
+    <EntitySet Name="DrillBlock" EntityType="Self.DrillBlock" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DrillBlockPoint" EntityType="Self.DrillBlockPoint" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Hole" EntityType="Self.Hole" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="HolePoint" EntityType="Self.HolePoint" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_DrillBlock_DrillBlockPoint" Association="Self.FK_DrillBlock_DrillBlockPoint">
+      <End Role="DrillBlockPoint" EntitySet="DrillBlockPoint" />
+      <End Role="DrillBlock" EntitySet="DrillBlock" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Hole_DrillBlock" Association="Self.FK_Hole_DrillBlock">
+      <End Role="DrillBlock" EntitySet="DrillBlock" />
+      <End Role="Hole" EntitySet="Hole" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Hole_HolePoint" Association="Self.FK_Hole_HolePoint">
+      <End Role="HolePoint" EntitySet="HolePoint" />
+      <End Role="Hole" EntitySet="Hole" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
